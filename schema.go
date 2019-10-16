@@ -9,7 +9,7 @@ import (
 /* Column names: RA,Dec,mag,dmag,x,y,major,minor,phi,det,chi/N,Pvr,Ptr,Pmv,
    Pkn,Pno,Pbn,Pcr,Pxt,Psc,Dup,WPflx,dflx */
 func main() {
-  schemaBytes := []byte(
+  mainSchema := []byte(
     `{
       "namespace": "atlas",
       "type": "record",
@@ -41,23 +41,36 @@ func main() {
       {"name": "Dup", "type": "double", "doc": "Dup"},
       {"name": "WPflx", "type": "double", "doc": "WPflx"},
       {"name": "dflx", "type": "double", "doc": "dflx"},
-      {"name": "cutoutScience", "type": ["cutout", "null"], "default": null},
-      {"name": "cutoutTemplate", "type": ["cutout", "null"], "default": null},
-      {"name": "cutoutDifference", "type": ["cutout", "null"], "default": null}
-      ]}`,
-  )
+      {"name": "cutoutScience", "type": ["atlas.alert.cutout", "null"], "default": null},
+      {"name": "cutoutTemplate", "type": ["atlas.alert.cutout", "null"], "default": null},
+      {"name": "cutoutDifference", "type": ["atlas.alert.cutout", "null"], "default": null}
+      ]}`
+    )
+
+      cutoutSchema := []byte(
+        `{
+          "namespace": "atlas.alert",
+          "type": "record",
+          "name": "cutout",
+          "doc": "avro schema for ATLAS cutouts",
+          "version": "0.1",
+          "fields": [
+          {"name": "fileName", "type": "string"},
+          {"name": "stampData", "type": "bytes", "doc": "fits.gz"}
+          ]}`
+        )
 
   // Unmarshal JSON  bytes to Schema interface
   var anySchema avro.AnySchema
-  err := json.Unmarshal(schemaBytes, &anySchema)
+  err := json.Unmarshal(mainSchema, &anySchema)
   if err != nil {
     panic(err)
   }
   schema := anySchema.Schema()
   // Marshal Schema interface to JSON bytes
-  schemaBytes, err = json.Marshal(schema)
+  mainSchema, err = json.Marshal(schema)
   if err != nil {
     panic(err)
   }
-  fmt.Println(string(schemaBytes))
+  fmt.Println(string(mainSchema))
 }
