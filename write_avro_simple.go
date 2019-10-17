@@ -15,7 +15,7 @@ type SimpleRecord struct {
 
 func main() {
   // Parse the schema file
-  schema, err := avro.ParseSchemaFile("alert-test.avsc")
+  schema, err := avro.ParseSchemaFile("alert_simple.avsc")
   if err != nil {
     log.Fatal(err)
   }
@@ -28,7 +28,7 @@ func main() {
   // Create buffer to store data
   var buf bytes.Buffer
   encoder := avro.NewBinaryEncoder(&buf)
-  // Create DatumWriter
+  // Create DatumWriter and set schema
   datumWriter := avro.NewSpecificDatumWriter()
   datumWriter.SetSchema(schema)
   // Create a simple record
