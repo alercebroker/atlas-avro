@@ -38,9 +38,14 @@ type AtlasRecord struct {
   Dup  float64 `avro:"Dup"`
   WPflx  float64 `avro:"WPflx"`
   dflx  float64 `avro:"dflx"`
-  cutoutScience ["atlas.alert.cutout", "null"]
-  cutoutTemplate ["atlas.alert.cutout", "null"]
-  cutoutDifference ["atlas.alert.cutout", "null"]
+  cutoutScience *Cutout `avro:"cutoutScience"`
+  cutoutTemplate *Cutout `avro:"cutoutTemplate"`
+  cutoutDifference *Cutout `avro:"cutoutDifference"`
+}
+
+type Cutout struct {
+  fileName string
+  stampData bytes //fits.gz
 }
 
 func main() {
