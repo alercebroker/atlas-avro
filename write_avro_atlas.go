@@ -61,7 +61,7 @@ func main() {
 
   // fmt.Println(p_cutoutDifference.stampData)
   // Parse the schema file
-  schema, err := avro.ParseSchemaFile("alert_aux.avsc")
+  schema, err := avro.ParseSchemaFile("plain_schema.avsc")
   if err != nil {
     log.Fatal(err)
   }
