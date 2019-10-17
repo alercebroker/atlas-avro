@@ -9,18 +9,18 @@ import (
 )
 
 type AtlasRecord struct {
-  schemavsn string `avro:"schemavsn"`
+  Schemavsn string `avro:"schemavsn"`
   RA  float64 `avro:"RA"`
   Dec  float64 `avro:"Dec"`
-  mag  float64 `avro:"mag"`
-  dmag  float64 `avro:"dmag"`
-  x  float64 `avro:"x"`
-  y  float64 `avro:"y"`
-  major  float64 `avro:"major"`
-  minor  float64 `avro:"minor"`
-  phi  float64 `avro:"phi"`
-  det  float64 `avro:"det"`
-  chi  float64 `avro:"chi/N"`
+  Mag  float64 `avro:"mag"`
+  Dmag  float64 `avro:"dmag"`
+  X  float64 `avro:"x"`
+  Y  float64 `avro:"y"`
+  Major  float64 `avro:"major"`
+  Minor  float64 `avro:"minor"`
+  Phi  float64 `avro:"phi"`
+  Det  float64 `avro:"det"`
+  Chi  float64 `avro:"chi/N"`
   Pvr  float64 `avro:"Pvr"`
   Ptr  float64 `avro:"Ptr"`
   Pmv  float64 `avro:"Pmv"`
@@ -32,34 +32,34 @@ type AtlasRecord struct {
   Psc  float64 `avro:"Psc"`
   Dup  float64 `avro:"Dup"`
   WPflx  float64 `avro:"WPflx"`
-  dflx  float64 `avro:"dflx"`
-  cutoutScience *Cutout `avro:"cutoutScience"`
-  cutoutTemplate *Cutout `avro:"cutoutTemplate"`
-  cutoutDifference *Cutout `avro:"cutoutDifference"`
+  Dflx  float64 `avro:"dflx"`
+  CutoutScience *Cutout `avro:"cutoutScience"`
+  CutoutTemplate *Cutout `avro:"cutoutTemplate"`
+  CutoutDifference *Cutout `avro:"cutoutDifference"`
 }
 
 type Cutout struct {
-  fileName string `avro:"cutoutScience.fileName"`
-  stampData []byte `"stampData"` // bytes //fits.gz
+  FileName string `avro:"fileName"`
+  StampData []byte `avro:"stampData"` // bytes //fits.gz
 }
 
 func main() {
   // Create cutouts
-  var p_cutoutScience *Cutout
-  p_cutoutScience = new(Cutout)
-  p_cutoutScience.fileName = "candid820127160015015005_pid820127160015_targ_sci.fits.gz"
-  p_cutoutScience.stampData = []byte{0x61, 0x62, 0x43}
+  p_cutoutScience := &Cutout{
+    FileName: "sci.fits.gz",
+    StampData: []byte{0x61, 0x62, 0x43},
+  }
+  p_cutoutTemplate := &Cutout{
+    FileName: "tem.fits.gz",
+    StampData: []byte{0x31, 0x12, 0x63},
+  }
 
-  var p_cutoutTemplate *Cutout
-  p_cutoutTemplate = new(Cutout)
-  p_cutoutTemplate.fileName = "candid820127160015015005_pid820127160015_targ_tem.fits.gz"
-  p_cutoutTemplate.stampData = []byte{0x61, 0x63, 0x10}
+  p_cutoutDifference := &Cutout{
+    FileName: "dif.fits.gz",
+    StampData: []byte{0x60, 0x73, 0x43},
+  }
 
-  var p_cutoutDifference *Cutout
-  p_cutoutDifference = new(Cutout)
-  p_cutoutDifference.fileName = "candid820127160015015005_pid820127160015_targ_dif.fits.gz"
-  p_cutoutDifference.stampData = []byte{0x21, 0x67, 0x20}
-
+  // fmt.Println(p_cutoutDifference.stampData)
   // Parse the schema file
   schema, err := avro.ParseSchemaFile("alert_aux.avsc")
   if err != nil {
@@ -79,18 +79,18 @@ func main() {
   datumWriter.SetSchema(schema)
   // Create an ATLAS record
   atlas_record := &AtlasRecord{
-    schemavsn: "0.1",
+    Schemavsn: "0.1",
     RA: 261.09578,
     Dec: 45.54479,
-    mag: 14.806,
-    dmag: 0.18,
-    x: 1000.9,
-    y: 29.19,
-    major: 2.27,
-    minor: 1.97,
-    phi: 128.2,
-    det: 0,
-    chi: 0.23,
+    Mag: 14.806,
+    Dmag: 0.18,
+    X: 1000.9,
+    Y: 29.19,
+    Major: 2.27,
+    Minor: 1.97,
+    Phi: 128.2,
+    Det: 0,
+    Chi: 0.23,
     Pvr: 999,
     Ptr: 0,
     Pmv: 0,
@@ -102,10 +102,10 @@ func main() {
     Psc: 0,
     Dup: 1,
     WPflx: 78875.5,
-    dflx: 3.4,
-    cutoutScience: p_cutoutScience,
-    cutoutTemplate: p_cutoutTemplate,
-    cutoutDifference: p_cutoutDifference,
+    Dflx: 3.4,
+    CutoutScience: p_cutoutScience,
+    CutoutTemplate: p_cutoutTemplate,
+    CutoutDifference: p_cutoutDifference,
   }
   // Write the data to the buffer through datumWriter
   err = datumWriter.Write(atlas_record, encoder)
@@ -127,3 +127,10 @@ func main() {
   // Close the file
   fileWriter.Close()
 }
+
+/*
+var p_cutoutDifference *Cutout
+p_cutoutDifference = new(Cutout)
+p_cutoutDifference.fileName = "candid820127160015015005_pid820127160015_targ_dif.fits.gz"
+p_cutoutDifference.stampData = []byte{0x21, 0x67, 0x20}
+*/
