@@ -4,6 +4,7 @@ import (
   "bytes"
   "fmt"
   "gopkg.in/avro.v0"
+  "io/ioutil"
   "log"
   "os"
 )
@@ -44,10 +45,16 @@ type AtlasRecord struct {
 }
 
 func main() {
+  // Read fits.gz file
+  sci_file_name := "sci.fits.gz"
+  sci_file, err :=  ioutil.ReadFile(sci_file_name)
+  if err != nil {
+    log.Fatal(err)
+  }
   // Create cutouts
   p_cutoutScience := &Cutout{
-    FileName: "sci.fits.gz",
-    StampData: []byte{0x61, 0x62, 0x43},
+    FileName: sci_file_name,
+    StampData: sci_file,
   }
   p_cutoutTemplate := &Cutout{
     FileName: "tem.fits.gz",
