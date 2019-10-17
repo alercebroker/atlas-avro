@@ -39,8 +39,8 @@ type AtlasRecord struct {
 }
 
 type Cutout struct {
-  fileName string
-  stampData []byte // bytes //fits.gz
+  fileName string `avro:"cutoutScience.fileName"`
+  stampData []byte `"stampData"` // bytes //fits.gz
 }
 
 func main() {
@@ -61,7 +61,7 @@ func main() {
   p_cutoutDifference.stampData = []byte{0x21, 0x67, 0x20}
 
   // Parse the schema file
-  schema, err := avro.ParseSchemaFile("alert.avsc")
+  schema, err := avro.ParseSchemaFile("alert_aux.avsc")
   if err != nil {
     log.Fatal(err)
   }
