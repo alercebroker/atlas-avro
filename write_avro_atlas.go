@@ -8,6 +8,11 @@ import (
   "os"
 )
 
+type Cutout struct {
+  FileName string `avro:"fileName"`
+  StampData []byte `avro:"stampData"` // bytes
+}
+
 type AtlasRecord struct {
   Schemavsn string `avro:"schemavsn"`
   RA  float64 `avro:"RA"`
@@ -36,11 +41,6 @@ type AtlasRecord struct {
   CutoutScience *Cutout `avro:"cutoutScience"`
   CutoutTemplate *Cutout `avro:"cutoutTemplate"`
   CutoutDifference *Cutout `avro:"cutoutDifference"`
-}
-
-type Cutout struct {
-  FileName string `avro:"fileName"`
-  StampData []byte `avro:"stampData"` // bytes //fits.gz
 }
 
 func main() {
