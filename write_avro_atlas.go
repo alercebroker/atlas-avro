@@ -134,10 +134,3 @@ func main() {
   // Close the file
   fileWriter.Close()
 }
-
-/*
-var p_cutoutDifference *Cutout
-p_cutoutDifference = new(Cutout)
-p_cutoutDifference.fileName = "candid820127160015015005_pid820127160015_targ_dif.fits.gz"
-p_cutoutDifference.stampData = []byte{0x21, 0x67, 0x20}
-*/
