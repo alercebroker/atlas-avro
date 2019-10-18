@@ -66,9 +66,8 @@ func createAVRO(headers []string, data []string) []byte {
     StampData: []byte{0x60, 0x73, 0x43},
   }
 
-  // fmt.Println(p_cutoutDifference.stampData)
   // Parse the schema file
-  schema, err := avro.ParseSchemaFile("plain_schema.avsc")
+  schema, err := avro.ParseSchemaFile("../schema/plain_schema.avsc")
   if err != nil {
     log.Fatal(err)
   }
