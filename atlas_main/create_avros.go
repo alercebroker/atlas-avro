@@ -43,6 +43,23 @@ type AtlasRecord struct {
   CutoutDifference *Cutout `avro:"cutoutDifference"`
 }
 
+// Open and return file
+func openFile(fileName string) *File {
+  // Open file
+  file, err := os.Open(fileName)
+  if err != nil {
+    log.Fatal(err)
+  }
+  return file
+}
+
+// Get ddc headers, here we assume that all the files have the same headers
+func getHeaders(fileName string) {
+  defer file.Close()
+  // Open ddc file
+  openFile
+}
+
 // Turn headers and data into AVRO
 func createAVRO(headers []string, data []string) []byte {
   // Read fits.gz file
@@ -60,7 +77,6 @@ func createAVRO(headers []string, data []string) []byte {
     FileName: "tem.fits.gz",
     StampData: []byte{0x31, 0x12, 0x63},
   }
-
   p_cutoutDifference := &Cutout{
     FileName: "dif.fits.gz",
     StampData: []byte{0x60, 0x73, 0x43},
@@ -135,8 +151,8 @@ func createAVRO(headers []string, data []string) []byte {
 }
 
 // Parse ddc file and return a list of headers and a list of data
-func parseDDC(fileName string) {
-  // Open dcc file
+func parseDdcFile(fileName string, headers ...[]string) {
+  // Open ddc file
   file, err := os.Open(fileName)
   if err != nil {
     log.Fatal(err)

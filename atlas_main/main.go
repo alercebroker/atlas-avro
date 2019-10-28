@@ -30,9 +30,10 @@ func main() {
     if err != nil {
       panic(err)
     }
-    // get the headers or find them in the file
-    // read file data (in chunks?)
-    // create avro files
+    // TODO: Get the headers or find them in the file
+    // Read file data
+    
+    // Create avro files
 
     // produce to topic
   }else{
