@@ -1,7 +1,7 @@
 package main
 
 import (
-  "fmt"
+  //"fmt"
   "log"
   //"io/ioutil"
   "os"
@@ -32,7 +32,7 @@ func main() {
     }
     // TODO: Get the headers or find them in the file
     // Read file data
-    
+
     // Create avro files
 
     // produce to topic

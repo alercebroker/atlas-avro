@@ -54,10 +54,23 @@ func openFile(fileName string) *File {
 }
 
 // Get ddc headers, here we assume that all the files have the same headers
-func getHeaders(fileName string) {
+func getHeaders(fileName string) []string {
   defer file.Close()
   // Open ddc file
-  openFile
+  file = openFile(fileName)
+  // Scan the file line by line
+  scanner := bufio.NewScanner(file)
+  for scanner.Scan() {
+    line := scanner.Text()
+    // Look for headers (if the next line doesn't start with '#')
+    if !strings.HasPrefix(line, "#") {
+      // Headers found, now parse them
+      headers := strings.Fields(line) // Get fields as array
+      _, headers = headers[0], headers[1:] // Remove '#' because it isn't a field
+      fmt.Println(headers)
+      break
+    }
+    return headers
 }
 
 // Turn headers and data into AVRO
