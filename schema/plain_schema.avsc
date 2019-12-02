@@ -29,6 +29,9 @@
     {"name": "Dup", "type": "double", "doc": "Dup"},
     {"name": "WPflx", "type": "double", "doc": "WPflx"},
     {"name": "dflx", "type": "double", "doc": "dflx"},
+    {"name": "pointing", "type": "string", "doc": "pointing"},
+    {"name": "objectSequence", "type": "int", "doc": "object sequence number"},
+    {"name": "objectID", "type": "string", "doc": "object identifier"},
     {"name": "cutoutScience",
       "type": {
         "namespace": "atlas.alert",
