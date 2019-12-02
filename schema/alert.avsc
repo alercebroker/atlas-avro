@@ -6,6 +6,7 @@
   "version": "0.1",
   "fields": [
   {"name": "schemavsn", "type": "string", "doc": "schema version used"},
+  {"name": "lineNumber", "type": "int", "doc": "number of the line in which the object appears in the DDC file"},
   {"name": "RA", "type": "double", "doc": "RA"},
   {"name": "Dec", "type": "double", "doc": "Dec"},
   {"name": "mag", "type": "double", "doc": "mag"},
@@ -29,6 +30,9 @@
   {"name": "Dup", "type": "double", "doc": "Dup"},
   {"name": "WPflx", "type": "double", "doc": "WPflx"},
   {"name": "dflx", "type": "double", "doc": "dflx"},
+  {"name": "pointing", "type": "string", "doc": "pointing"},
+  {"name": "objectSequence", "type": "int", "doc": "object sequence number"},
+  {"name": "objectID", "type": "string", "doc": "object identifier"},
   {"name": "cutoutScience", "type": ["atlas.alert.cutout", "null"], "default": null},
   {"name": "cutoutTemplate", "type": ["atlas.alert.cutout", "null"], "default": null},
   {"name": "cutoutDifference", "type": ["atlas.alert.cutout", "null"], "default": null}
