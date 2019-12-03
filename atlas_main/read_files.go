@@ -43,7 +43,7 @@ type AtlasRecord struct {
   WPflx float64 `avro:"WPflx"`
   Dflx float64 `avro:"dflx"`
   Pointing string `avro:"pointing"`
-  ObjectSequence int `avro:"objectSequence"`
+  ObjectSequence float64 `avro:"objectSequence"`
   ObjectID string `avro:"objectID"`
   CutoutScience *Cutout `avro:"cutoutScience"`
   CutoutTemplate *Cutout `avro:"cutoutTemplate"`
@@ -87,7 +87,7 @@ func createRecord(data []interface{}) *AtlasRecord {
   WPflx, _ := strconv.ParseFloat(data[22].(string), 64)
   Dflx, _ := strconv.ParseFloat(data[23].(string), 64)
   Pointing := string(data[24].(string))
-  ObjectSequence, _ := strconv.Atoi(data[25].(string)) //to int
+  ObjectSequence, _ := strconv.ParseFloat(data[25].(string), 64) //strconv.ParseInt(data[25].(string), 10, 32) //strconv.Atoi(data[25].(string)) //to int
   ObjectID := string(data[26].(string))
   CutoutScience := data[27].(*Cutout)
   CutoutTemplate := data[28].(*Cutout)
@@ -146,14 +146,14 @@ func main() {
   }
   // for each candid
   for _, candid := range candids {
-/*    //structure to hold alert data
-    var data []interface{} //SchemaVersion
-    */
-    data := []interface{}{"0.1"} //SchemaVersion
+    //structure to hold alert data
+    //var data []interface{} //SchemaVersion
+    data := []interface{}{"0.1"} //add SchemaVersion
     /*
     data = append(data, "0.1") //SchemaVersion
     */
     //open the info file
+    fmt.Println(candid)
     alert := directory + candid + ".info"
     content, _ := ioutil.ReadFile(alert)
     //put the contents in an array
@@ -211,9 +211,8 @@ func main() {
     //instantiate struct
     atlas_record := createRecord(data)
     //fmt.Println(*r) //"%+v\n",
-    fmt.Println("so far so good")
     // Write the data to the buffer through datumWriter
-    err = datumWriter.Write(*atlas_record, encoder)
+    err = datumWriter.Write(atlas_record, encoder)
     if err != nil {
       log.Fatal(err)
     }
