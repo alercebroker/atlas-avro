@@ -6,6 +6,7 @@
   "version": "0.1",
   "fields": [
     {"name": "schemavsn", "type": "string", "doc": "schema version used"},
+    {"name": "jd", "type": "double", "doc": "jd"},
     {"name": "RA", "type": "double", "doc": "RA"},
     {"name": "Dec", "type": "double", "doc": "Dec"},
     {"name": "mag", "type": "double", "doc": "mag"},
