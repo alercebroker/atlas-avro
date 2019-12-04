@@ -45,7 +45,29 @@
           {"name": "stampData", "type": "bytes", "doc": "fits.gz"}
         ]
       }, "default": null},
-    {"name": "cutoutTemplate", "type": "atlas.alert.cutout", "default": null},
-    {"name": "cutoutDifference", "type": "atlas.alert.cutout", "default": null}
-  ]
+    {"name": "cutoutTemplate",
+      "type": {
+        "namespace": "atlas.alert",
+        "type": "record",
+        "name": "cutout",
+        "doc": "avro schema for ATLAS cutouts",
+        "version": "0.1",
+        "fields": [
+          {"name": "fileName", "type": "string"},
+          {"name": "stampData", "type": "bytes", "doc": "fits.gz"}
+        ]
+      }, "default": null},
+    {"name": "cutoutDifference",
+      "type": {
+        "namespace": "atlas.alert",
+        "type": "record",
+        "name": "cutout",
+        "doc": "avro schema for ATLAS cutouts",
+        "version": "0.1",
+        "fields": [
+          {"name": "fileName", "type": "string"},
+          {"name": "stampData", "type": "bytes", "doc": "fits.gz"}
+        ]
+      }, "default": null}
+    ]
 }
