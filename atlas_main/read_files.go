@@ -43,7 +43,7 @@ type AtlasRecord struct {
   WPflx float64 `avro:"WPflx"`
   Dflx float64 `avro:"dflx"`
   Pointing string `avro:"pointing"`
-  ObjectSequence float64 `avro:"objectSequence"`
+  Candid string `avro:"candid"`
   ObjectID string `avro:"objectID"`
   CutoutScience *Cutout `avro:"cutoutScience"`
   CutoutTemplate *Cutout `avro:"cutoutTemplate"`
@@ -61,7 +61,6 @@ func openFile(fileName string) *os.File {
 }
 
 func createRecord(data []interface{}) *AtlasRecord {
-  //num, _ := strconv.ParseFloat(data[1].(string), 64)
   SchemaVersion := string(data[0].(string))
   RA, _ := strconv.ParseFloat(data[1].(string), 64)
   Dec, _ := strconv.ParseFloat(data[2].(string), 64)
@@ -87,7 +86,7 @@ func createRecord(data []interface{}) *AtlasRecord {
   WPflx, _ := strconv.ParseFloat(data[22].(string), 64)
   Dflx, _ := strconv.ParseFloat(data[23].(string), 64)
   Pointing := string(data[24].(string))
-  ObjectSequence, _ := strconv.ParseFloat(data[25].(string), 64) //strconv.ParseInt(data[25].(string), 10, 32) //strconv.Atoi(data[25].(string)) //to int
+  Candid := string(data[25].(string))
   ObjectID := string(data[26].(string))
   CutoutScience := data[27].(*Cutout)
   CutoutTemplate := data[28].(*Cutout)
@@ -118,7 +117,7 @@ func createRecord(data []interface{}) *AtlasRecord {
     WPflx: WPflx,
     Dflx: Dflx,
     Pointing: Pointing,
-    ObjectSequence: ObjectSequence,
+    Candid: Candid,
     ObjectID: ObjectID,
     CutoutScience: CutoutScience,
     CutoutTemplate: CutoutTemplate,
@@ -158,8 +157,12 @@ func main() {
     content, _ := ioutil.ReadFile(alert)
     //put the contents in an array
     content_array := strings.Fields(string(content))[1:] //remove first unneeded line
-    for _, element := range content_array {
-      data = append(data, element)
+    for i, element := range content_array {
+      if (i == 24) {
+        data = append(data, content_array[23] + "_" + content_array[24])
+      } else {
+        data = append(data, element)
+      }
     }
     //create cutouts and append them
     science_file_name := directory + candid + "_sciestmp.fits.gz"
@@ -173,10 +176,10 @@ func main() {
       log.Fatal(err)
     }
     difference_file_name := directory + candid + "_diffstmp.fits.gz"
-    //diff_file, err :=  ioutil.ReadFile(difference_file_name)
-    //if err != nil {
-    //  log.Fatal(err)
-    //}
+    diff_file, err :=  ioutil.ReadFile(difference_file_name)
+    if err != nil {
+      log.Fatal(err)
+    }
     // Create cutouts
     p_cutoutScience := &Cutout{
       FileName: science_file_name,
@@ -188,7 +191,7 @@ func main() {
     }
     p_cutoutDifference := &Cutout{
       FileName: difference_file_name,
-      StampData: []byte{0x60, 0x73, 0x43},
+      StampData: diff_file,
     }
     data = append(data, p_cutoutScience, p_cutoutTemplate, p_cutoutDifference)
     // Parse the schema file
@@ -197,7 +200,7 @@ func main() {
       log.Fatal(err)
     }
     // Open file to write to
-    f, err := os.Create("alert" + candid + ".avro")
+    f, err := os.Create(candid + ".avro")
     if err != nil {
       fmt.Println(err)
       return
