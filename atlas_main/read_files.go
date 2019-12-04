@@ -10,6 +10,8 @@ import (
   "path/filepath"
   "strconv"
   "strings"
+  "math/rand"
+  "time"
 )
 
 type Cutout struct {
@@ -19,6 +21,7 @@ type Cutout struct {
 
 type AtlasRecord struct {
   SchemaVersion string `avro:"schemavsn"`
+  JD float64 `avro:"jd"`
   RA float64 `avro:"RA"`
   Dec float64 `avro:"Dec"`
   Mag float64 `avro:"mag"`
@@ -50,6 +53,14 @@ type AtlasRecord struct {
   CutoutDifference *Cutout `avro:"cutoutDifference"`
 }
 
+func randJD(min, max float64, n int) []float64 {
+    res := make([]float64, n)
+    for i := range res {
+        res[i] = min + rand.Float64() * (max - min)
+    }
+    return res
+}
+
 // Open and return file
 func openFile(fileName string) *os.File {
   // Open file
@@ -62,37 +73,39 @@ func openFile(fileName string) *os.File {
 
 func createRecord(data []interface{}) *AtlasRecord {
   SchemaVersion := string(data[0].(string))
-  RA, _ := strconv.ParseFloat(data[1].(string), 64)
-  Dec, _ := strconv.ParseFloat(data[2].(string), 64)
-  Mag, _ := strconv.ParseFloat(data[3].(string), 64)
-  Dmag, _ := strconv.ParseFloat(data[4].(string), 64)
-  X, _ := strconv.ParseFloat(data[5].(string), 64)
-  Y, _ := strconv.ParseFloat(data[6].(string), 64)
-  Major, _ := strconv.ParseFloat(data[7].(string), 64)
-  Minor, _ := strconv.ParseFloat(data[8].(string), 64)
-  Phi, _ := strconv.ParseFloat(data[9].(string), 64)
-  Det, _ := strconv.ParseFloat(data[10].(string), 64)
-  ChiN, _ := strconv.ParseFloat(data[11].(string), 64)
-  Pvr, _ := strconv.ParseFloat(data[12].(string), 64)
-  Ptr, _ := strconv.ParseFloat(data[13].(string), 64)
-  Pmv, _ := strconv.ParseFloat(data[14].(string), 64)
-  Pkn, _ := strconv.ParseFloat(data[15].(string), 64)
-  Pno, _ := strconv.ParseFloat(data[16].(string), 64)
-  Pbn, _ := strconv.ParseFloat(data[17].(string), 64)
-  Pxt, _ := strconv.ParseFloat(data[18].(string), 64)
-  Pcr, _ := strconv.ParseFloat(data[19].(string), 64)
-  Dup, _ := strconv.ParseFloat(data[20].(string), 64)
-  Psc, _ := strconv.ParseFloat(data[21].(string), 64)
-  WPflx, _ := strconv.ParseFloat(data[22].(string), 64)
-  Dflx, _ := strconv.ParseFloat(data[23].(string), 64)
-  Pointing := string(data[24].(string))
-  Candid := string(data[25].(string))
-  ObjectID := string(data[26].(string))
-  CutoutScience := data[27].(*Cutout)
-  CutoutTemplate := data[28].(*Cutout)
-  CutoutDifference := data[29].(*Cutout)
+  JD, _ := strconv.ParseFloat(data[1].(string), 64)
+  RA, _ := strconv.ParseFloat(data[2].(string), 64)
+  Dec, _ := strconv.ParseFloat(data[3].(string), 64)
+  Mag, _ := strconv.ParseFloat(data[4].(string), 64)
+  Dmag, _ := strconv.ParseFloat(data[5].(string), 64)
+  X, _ := strconv.ParseFloat(data[6].(string), 64)
+  Y, _ := strconv.ParseFloat(data[7].(string), 64)
+  Major, _ := strconv.ParseFloat(data[8].(string), 64)
+  Minor, _ := strconv.ParseFloat(data[9].(string), 64)
+  Phi, _ := strconv.ParseFloat(data[10].(string), 64)
+  Det, _ := strconv.ParseFloat(data[11].(string), 64)
+  ChiN, _ := strconv.ParseFloat(data[12].(string), 64)
+  Pvr, _ := strconv.ParseFloat(data[13].(string), 64)
+  Ptr, _ := strconv.ParseFloat(data[14].(string), 64)
+  Pmv, _ := strconv.ParseFloat(data[15].(string), 64)
+  Pkn, _ := strconv.ParseFloat(data[16].(string), 64)
+  Pno, _ := strconv.ParseFloat(data[17].(string), 64)
+  Pbn, _ := strconv.ParseFloat(data[18].(string), 64)
+  Pxt, _ := strconv.ParseFloat(data[19].(string), 64)
+  Pcr, _ := strconv.ParseFloat(data[20].(string), 64)
+  Dup, _ := strconv.ParseFloat(data[21].(string), 64)
+  Psc, _ := strconv.ParseFloat(data[22].(string), 64)
+  WPflx, _ := strconv.ParseFloat(data[23].(string), 64)
+  Dflx, _ := strconv.ParseFloat(data[24].(string), 64)
+  Pointing := string(data[25].(string))
+  Candid := string(data[26].(string))
+  ObjectID := string(data[27].(string))
+  CutoutScience := data[28].(*Cutout)
+  CutoutTemplate := data[29].(*Cutout)
+  CutoutDifference := data[30].(*Cutout)
   atlas_record := AtlasRecord{
     SchemaVersion: SchemaVersion,
+    JD: JD,
     RA: RA,
     Dec: Dec,
     Mag: Mag,
@@ -147,10 +160,10 @@ func main() {
   for _, candid := range candids {
     //structure to hold alert data
     //var data []interface{} //SchemaVersion
-    data := []interface{}{"0.1"} //add SchemaVersion
-    /*
-    data = append(data, "0.1") //SchemaVersion
-    */
+    // generate random mjd
+    rand.Seed(time.Now().UnixNano())
+    jd := randJD(50000, 60000, 1)
+    data := []interface{}{"0.1", fmt.Sprint(jd[0])} //add SchemaVersion
     //open the info file
     fmt.Println(candid)
     alert := directory + candid + ".info"
