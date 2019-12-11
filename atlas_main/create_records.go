@@ -1,6 +1,7 @@
 package main
 
 import (
+  "fmt"
   "io/ioutil"
   "log"
   "strconv"
@@ -11,19 +12,18 @@ type Cutout struct {
   StampData []byte `avro:"stampData"` // bytes
 }
 
-type AtlasRecord struct {
-  SchemaVersion string `avro:"schemavsn"`
+type Candidate struct {
   RA float64 `avro:"RA"`
   Dec float64 `avro:"Dec"`
-  Mag float64 `avro:"mag"`
-  Dmag float64 `avro:"dmag"`
-  X float64 `avro:"x"`
-  Y float64 `avro:"y"`
-  Major float64 `avro:"major"`
-  Minor float64 `avro:"minor"`
-  Phi float64 `avro:"phi"`
-  Det float64 `avro:"det"`
-  ChiN float64 `avro:"chi/N"`
+  Mag float64 `avro:"Mag"`
+  Dmag float64 `avro:"Dmag"`
+  X float64 `avro:"X"`
+  Y float64 `avro:"Y"`
+  Major float64 `avro:"Major"`
+  Minor float64 `avro:"Minor"`
+  Phi float64 `avro:"Phi"`
+  Det float64 `avro:"Det"`
+  ChiN float64 `avro:"ChiN"`
   Pvr float64 `avro:"Pvr"`
   Ptr float64 `avro:"Ptr"`
   Pmv float64 `avro:"Pmv"`
@@ -35,10 +35,15 @@ type AtlasRecord struct {
   Psc float64 `avro:"Psc"`
   Dup float64 `avro:"Dup"`
   WPflx float64 `avro:"WPflx"`
-  Dflx float64 `avro:"dflx"`
+  Dflx float64 `avro:"Dflx"`
+  Mjd float64 `avro:"Mjd"`
+}
+
+type AtlasRecord struct {
+  SchemaVersion string `avro:"schemavsn"`
+  Candidate *Candidate `avro:"candidate"`
   Candid string `avro:"candid"`
   ObjectID string `avro:"objectID"`
-  Mjd float64 `avro:"mjd"`
   CutoutScience *Cutout `avro:"cutoutScience"`
   CutoutTemplate *Cutout `avro:"cutoutTemplate"`
   CutoutDifference *Cutout `avro:"cutoutDifference"`
@@ -58,39 +63,35 @@ func createCutout(directory string, cutout_file_name string) *Cutout {
   return p_cutout
 }
 
-func createRecord(data []interface{}) *AtlasRecord {
-  SchemaVersion := string(data[0].(string))
-  RA, _ := strconv.ParseFloat(data[1].(string), 64)
-  Dec, _ := strconv.ParseFloat(data[2].(string), 64)
-  Mag, _ := strconv.ParseFloat(data[3].(string), 64)
-  Dmag, _ := strconv.ParseFloat(data[4].(string), 64)
-  X, _ := strconv.ParseFloat(data[5].(string), 64)
-  Y, _ := strconv.ParseFloat(data[6].(string), 64)
-  Major, _ := strconv.ParseFloat(data[7].(string), 64)
-  Minor, _ := strconv.ParseFloat(data[8].(string), 64)
-  Phi, _ := strconv.ParseFloat(data[9].(string), 64)
-  Det, _ := strconv.ParseFloat(data[10].(string), 64)
-  ChiN, _ := strconv.ParseFloat(data[11].(string), 64)
-  Pvr, _ := strconv.ParseFloat(data[12].(string), 64)
-  Ptr, _ := strconv.ParseFloat(data[13].(string), 64)
-  Pmv, _ := strconv.ParseFloat(data[14].(string), 64)
-  Pkn, _ := strconv.ParseFloat(data[15].(string), 64)
-  Pno, _ := strconv.ParseFloat(data[16].(string), 64)
-  Pbn, _ := strconv.ParseFloat(data[17].(string), 64)
+func createCandidate(data []interface{}) *Candidate {
+  for _, element := range data {
+    fmt.Println(element)
+  }
+  RA, _ := strconv.ParseFloat(data[0].(string), 64)
+  Dec, _ := strconv.ParseFloat(data[1].(string), 64)
+  Mag, _ := strconv.ParseFloat(data[2].(string), 64)
+  Dmag, _ := strconv.ParseFloat(data[3].(string), 64)
+  X, _ := strconv.ParseFloat(data[4].(string), 64)
+  Y, _ := strconv.ParseFloat(data[5].(string), 64)
+  Major, _ := strconv.ParseFloat(data[6].(string), 64)
+  Minor, _ := strconv.ParseFloat(data[7].(string), 64)
+  Phi, _ := strconv.ParseFloat(data[8].(string), 64)
+  Det, _ := strconv.ParseFloat(data[9].(string), 64)
+  ChiN, _ := strconv.ParseFloat(data[10].(string), 64)
+  Pvr, _ := strconv.ParseFloat(data[11].(string), 64)
+  Ptr, _ := strconv.ParseFloat(data[12].(string), 64)
+  Pmv, _ := strconv.ParseFloat(data[13].(string), 64)
+  Pkn, _ := strconv.ParseFloat(data[14].(string), 64)
+  Pno, _ := strconv.ParseFloat(data[15].(string), 64)
+  Pbn, _ := strconv.ParseFloat(data[16].(string), 64)
+  Pcr, _ := strconv.ParseFloat(data[17].(string), 64)
   Pxt, _ := strconv.ParseFloat(data[18].(string), 64)
-  Pcr, _ := strconv.ParseFloat(data[19].(string), 64)
-  Psc, _ := strconv.ParseFloat(data[20].(string), 64)
-  Dup, _ := strconv.ParseFloat(data[21].(string), 64)
-  WPflx, _ := strconv.ParseFloat(data[22].(string), 64)
-  Dflx, _ := strconv.ParseFloat(data[23].(string), 64)
-  Candid := string(data[24].(string))
-  ObjectID := string(data[25].(string))
-  Mjd, _ := strconv.ParseFloat(data[26].(string), 64)
-  CutoutScience := data[27].(*Cutout)
-  CutoutTemplate := data[28].(*Cutout)
-  CutoutDifference := data[29].(*Cutout)
-  atlas_record := AtlasRecord{
-    SchemaVersion: SchemaVersion,
+  Psc, _ := strconv.ParseFloat(data[19].(string), 64)
+  Dup, _ := strconv.ParseFloat(data[20].(string), 64)
+  WPflx, _ := strconv.ParseFloat(data[21].(string), 64)
+  Dflx, _ := strconv.ParseFloat(data[22].(string), 64)
+  Mjd, _ := strconv.ParseFloat(data[23].(string), 64)
+  candidate := Candidate{
     RA: RA,
     Dec: Dec,
     Mag: Mag,
@@ -108,15 +109,77 @@ func createRecord(data []interface{}) *AtlasRecord {
     Pkn: Pkn,
     Pno: Pno,
     Pbn: Pbn,
-    Pxt: Pxt,
     Pcr: Pcr,
+    Pxt: Pxt,
     Psc: Psc,
     Dup: Dup,
     WPflx: WPflx,
     Dflx: Dflx,
+    Mjd: Mjd,
+  }
+  return &candidate
+}
+
+func createRecord(data []interface{}) *AtlasRecord {
+  /*
+   * Candidate fields are RA, Dec, Mag, Dmag, X, Y, Major, Minor,
+   * Phi, Det, ChiN, Pvr, Ptr, Pmv, Pkn, Pno, Pbn, Pxt, Pcr, Dup,
+   * WPflx, Dflx, Mjd
+   */
+  // Float64 array to store candidate fields
+  candidate_data := []interface{}{data[1]} // RA
+  // Put the contents of the file in the data of the alert
+  for i, element := range data[2:27] {
+    real_count := i + 2
+    if (real_count == 24 || real_count == 25) {
+    } else {
+      //fmt.Println(element)
+      candidate_data = append(candidate_data, element)
+    }
+  }
+  /*var candidate_data interface{}
+  candidate_data = append(candidate_data,
+    data[1].(float64), // RA
+    data[2].(float64), // Dec
+    data[3].(float64), // Mag
+    data[4].(float64), // Dmag
+    data[5].(float64), // X
+    data[6].(float64), // Y
+    data[7].(float64), // Major
+    data[8].(float64), // Minor
+    data[9].(float64), // Phi
+    data[10].(float64), // Det
+    data[11].(float64), // ChiN
+    data[12].(float64), // Pvr
+    data[13].(float64), // Ptr
+    data[14].(float64), // Pmv
+    data[15].(float64), // Pkn
+    data[16].(float64), // Pno
+    data[17].(float64), // Pbn
+    data[18].(float64), // Pxt
+    data[19].(float64), // Pcr
+    data[20].(float64), // Psc
+    data[21].(float64), // Dup
+    data[22].(float64), // WPflx
+    data[23].(float64), // Dflx
+    data[26].(float64)) // Mjd
+    */
+  // Create candidate
+  p_candidate := createCandidate(candidate_data)
+  // Non candidate fields
+  SchemaVersion := string(data[0].(string))
+  Candidate := p_candidate
+  Candid := string(data[24].(string))
+  ObjectID := string(data[25].(string))
+  CutoutScience := data[27].(*Cutout)
+  CutoutTemplate := data[28].(*Cutout)
+  CutoutDifference := data[29].(*Cutout)
+  // Create atlas record
+  atlas_record := AtlasRecord{
+    SchemaVersion: SchemaVersion,
+    Candidate: Candidate,
     Candid: Candid,
     ObjectID: ObjectID,
-    Mjd: Mjd,
     CutoutScience: CutoutScience,
     CutoutTemplate: CutoutTemplate,
     CutoutDifference: CutoutDifference,

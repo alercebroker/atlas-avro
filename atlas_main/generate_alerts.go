@@ -23,7 +23,6 @@ func openFile(fileName string) *os.File {
 }
 
 func main() {
-
   // Load the configuration file
   configuration, err := loadConfiguration("")
   if err != nil {
@@ -92,9 +91,8 @@ func main() {
     // Create DatumWriter and set schema
     datumWriter := avro.NewSpecificDatumWriter()
     datumWriter.SetSchema(schema)
-    //instantiate struct
+    // Instantiate struct
     atlas_record := createRecord(alert_data)
-    //fmt.Println(*r) //"%+v\n",
     // Write the data to the buffer through datumWriter
     err = datumWriter.Write(atlas_record, encoder)
     if err != nil {
