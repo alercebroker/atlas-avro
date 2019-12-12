@@ -7,6 +7,8 @@ import (
   "strconv"
 )
 
+// Structs definitions
+
 type Cutout struct {
   FileName string `avro:"fileName"`
   StampData []byte `avro:"stampData"` // bytes
@@ -44,26 +46,23 @@ type AtlasRecord struct {
   Candidate *Candidate `avro:"candidate"`
   Candid string `avro:"candid"`
   ObjectID string `avro:"objectID"`
-  CutoutScience *Cutout `avro:"cutoutScience"`
   CutoutTemplate *Cutout `avro:"cutoutTemplate"`
+  CutoutScience *Cutout `avro:"cutoutScience"`
   CutoutDifference *Cutout `avro:"cutoutDifference"`
 }
 
+// Global map, stamp type to extension name
+var get_extension = map[string]string{
+  "template": "_tstamp.fits",
+  "science": "_istamp.fits",
+  "difference": "_dstamp.fits",
+}
+
 func createCutouts(directory string, candid string) map[string]*Cutout {
-  // Cutout types
-  cutout_kinds := [3]string{"template", "science", "difference"}
-  // Cutout extensions
-  extensions := [3]string{"_tstamp.fits", "_istamp.fits", "_dstamp.fits"}
-  // Map type to extension
-  get_extension := make(map[string]string)
-  // Fill the map
-  for i, _ := range cutout_kinds {
-    get_extension[cutout_kinds[i]] = extensions[i]
-  }
   // Holder for cutouts
   cutouts := make(map[string]*Cutout)
   // Fill cutout map
-  for _, kind := range cutout_kinds {
+  for kind, extension := range get_extension {
     // Cutout name
     cutout_file_name := candid + get_extension[kind]
     // Read stamp data
@@ -83,9 +82,6 @@ func createCutouts(directory string, candid string) map[string]*Cutout {
 }
 
 func createCandidate(data []interface{}) *Candidate {
-  for _, element := range data {
-    fmt.Println(element)
-  }
   RA, _ := strconv.ParseFloat(data[0].(string), 64)
   Dec, _ := strconv.ParseFloat(data[1].(string), 64)
   Mag, _ := strconv.ParseFloat(data[2].(string), 64)
@@ -148,11 +144,11 @@ func createRecord(data []interface{}) *AtlasRecord {
   // Float64 array to store candidate fields
   candidate_data := []interface{}{data[1]} // RA
   // Put the contents of the file in the data of the alert
-  for i, element := range data[2:27] {
+  for i, element := range data[2:27] { // does not include 27
     real_count := i + 2
+    // Skip candid and objectID
     if (real_count == 24 || real_count == 25) {
     } else {
-      //fmt.Println(element)
       candidate_data = append(candidate_data, element)
     }
   }
@@ -163,8 +159,9 @@ func createRecord(data []interface{}) *AtlasRecord {
   Candidate := p_candidate
   Candid := string(data[24].(string))
   ObjectID := string(data[25].(string))
-  CutoutScience := data[27].(*Cutout)
-  CutoutTemplate := data[28].(*Cutout)
+  // data[26] is mjd, this value goes in the candidate
+  CutoutTemplate := data[27].(*Cutout)
+  CutoutScience := data[28].(*Cutout)
   CutoutDifference := data[29].(*Cutout)
   // Create atlas record
   atlas_record := AtlasRecord{
@@ -172,8 +169,8 @@ func createRecord(data []interface{}) *AtlasRecord {
     Candidate: Candidate,
     Candid: Candid,
     ObjectID: ObjectID,
-    CutoutScience: CutoutScience,
     CutoutTemplate: CutoutTemplate,
+    CutoutScience: CutoutScience,
     CutoutDifference: CutoutDifference,
   }
   return &atlas_record

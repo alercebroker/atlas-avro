@@ -40,7 +40,7 @@ func main() {
   // Extension of files that contain the alert information
   info_extension := ".info"
   // Look for all the info files
-  info_files, err := filepath.Glob(strings.Join([]string{directory, "*", info_extension}, ""))
+  info_files, err := filepath.Glob(directory + "*" + info_extension)
   if err != nil {
     log.Fatal(err)
   }
