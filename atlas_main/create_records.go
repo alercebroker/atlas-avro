@@ -49,18 +49,37 @@ type AtlasRecord struct {
   CutoutDifference *Cutout `avro:"cutoutDifference"`
 }
 
-func createCutout(directory string, cutout_file_name string) *Cutout {
-  // Read stamp data
-  cutout_data, err :=  ioutil.ReadFile(directory + cutout_file_name)
-  if err != nil {
-    log.Fatal(err)
+func createCutouts(directory string, candid string) map[string]*Cutout {
+  // Cutout types
+  cutout_kinds := [3]string{"template", "science", "difference"}
+  // Cutout extensions
+  extensions := [3]string{"_tstamp.fits", "_istamp.fits", "_dstamp.fits"}
+  // Map type to extension
+  get_extension := make(map[string]string)
+  // Fill the map
+  for i, _ := range cutout_kinds {
+    get_extension[cutout_kinds[i]] = extensions[i]
   }
-  // Create cutout object
-  p_cutout := &Cutout{
-    FileName: cutout_file_name,
-    StampData: cutout_data,
+  // Holder for cutouts
+  cutouts := make(map[string]*Cutout)
+  // Fill cutout map
+  for _, kind := range cutout_kinds {
+    // Cutout name
+    cutout_file_name := candid + get_extension[kind]
+    // Read stamp data
+    cutout_data, err :=  ioutil.ReadFile(directory + cutout_file_name)
+    if err != nil {
+      log.Fatal(err)
+    }
+    // Create cutout object
+    p_cutout := &Cutout{
+      FileName: cutout_file_name,
+      StampData: cutout_data,
+    }
+    // Append cutout to array
+    cutouts[kind] = p_cutout
   }
-  return p_cutout
+  return cutouts
 }
 
 func createCandidate(data []interface{}) *Candidate {

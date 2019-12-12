@@ -24,7 +24,7 @@ func openFile(fileName string) *os.File {
 
 func main() {
   // Load the configuration file
-  configuration, err := loadConfiguration("")
+  configuration, err := loadConfiguration("/home/daniela/atlas-avro/config/config.json")
   if err != nil {
     fmt.Println(err)
   }
@@ -35,7 +35,7 @@ func main() {
   }
   // Get initial time
   start := time.Now()
-  // Open directory
+  // Open data directory
   directory := configuration.DataDirectory
   // Extension of files that contain the alert information
   info_extension := ".info"
@@ -44,22 +44,10 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-  // String array to store candids
-  candids := []string{}
-  // For every info file
+  // For each info file
   for _, info_file := range info_files {
-    // Get the file's base name (file name including the extension)
-    base_name := filepath.Base(info_file)
-    // Leave just the name (candid)
-    candid := strings.TrimSuffix(base_name, info_extension)
-    candids = append(candids, candid)
-  }
-  // For each candid
-  for _, candid := range candids {
-    // Get full path to alert info file
-    alert := (strings.Join([]string{directory, candid, info_extension}, ""))
     // Read the alert information
-    content, _ := ioutil.ReadFile(alert)
+    content, _ := ioutil.ReadFile(info_file)
     // Put the contents in an array
     contents := strings.Fields(string(content))
     // Begin by adding the schema version
@@ -69,16 +57,15 @@ func main() {
     for _, element := range contents {
       alert_data = append(alert_data, element)
     }
-    // Cutout extensions
-    template_file_extension := "_tstamp.fits"
-    science_file_extension := "_istamp.fits"
-    difference_file_extension := "_dstamp.fits"
+    // Get the file's base name (file name including the extension)
+    base_name := filepath.Base(info_file)
+    // Leave just the name (candid)
+    candid := strings.TrimSuffix(base_name, info_extension)
     // Generate cutouts
-    p_cutoutTemplate := createCutout(directory, candid + template_file_extension)
-    p_cutoutScience := createCutout(directory, candid + science_file_extension)
-    p_cutoutDifference := createCutout(directory, candid + difference_file_extension)
+    cutouts := createCutouts(directory, candid)
     // and append them
-    alert_data = append(alert_data, p_cutoutScience, p_cutoutTemplate, p_cutoutDifference)
+    alert_data = append(alert_data, cutouts["template"],
+      cutouts["science"], cutouts["difference"])
     // Open file to write to
     f, err := os.Create(candid + ".avro")
     if err != nil {
