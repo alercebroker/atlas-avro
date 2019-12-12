@@ -6,7 +6,6 @@
   "version": "0.1",
   "fields": [
     {"name": "schemavsn", "type": "string", "doc": "schema version used"},
-    {"name": "jd", "type": "double", "doc": "jd"},
     {"name": "RA", "type": "double", "doc": "RA"},
     {"name": "Dec", "type": "double", "doc": "Dec"},
     {"name": "mag", "type": "double", "doc": "mag"},
@@ -30,10 +29,10 @@
     {"name": "Dup", "type": "double", "doc": "Dup"},
     {"name": "WPflx", "type": "double", "doc": "WPflx"},
     {"name": "dflx", "type": "double", "doc": "dflx"},
-    {"name": "pointing", "type": "string", "doc": "pointing"},
     {"name": "candid", "type": "string", "doc": "alert identifier"},
     {"name": "objectID", "type": "string", "doc": "object identifier"},
-    {"name": "cutoutScience",
+    {"name": "mjd", "type": "double", "doc": "mjd"},
+    {"name": "cutoutTemplate",
       "type": {
         "namespace": "atlas",
         "type": "record",
@@ -45,7 +44,7 @@
           {"name": "stampData", "type": "bytes", "doc": "fits.gz"}
         ]
       }, "default": null},
-    {"name": "cutoutTemplate", "type": "atlas.cutout", "default": null},
+    {"name": "cutoutScience", "type": "atlas.cutout", "default": null},
     {"name": "cutoutDifference", "type": "atlas.cutout", "default": null}
   ]
 }
