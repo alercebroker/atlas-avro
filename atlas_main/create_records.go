@@ -122,7 +122,7 @@ func createCandidate(data []interface{}) *Candidate {
 
 func createRecord(data []interface{}) *AtlasRecord {
   /*
-   * Candidate fields are RA, Dec, Mag, Dmag, X, Y, Major, Minor,
+   * Candidate fields are: RA, Dec, Mag, Dmag, X, Y, Major, Minor,
    * Phi, Det, ChiN, Pvr, Ptr, Pmv, Pkn, Pno, Pbn, Pxt, Pcr, Dup,
    * WPflx, Dflx, Mjd
    */
@@ -137,33 +137,6 @@ func createRecord(data []interface{}) *AtlasRecord {
       candidate_data = append(candidate_data, element)
     }
   }
-  /*var candidate_data interface{}
-  candidate_data = append(candidate_data,
-    data[1].(float64), // RA
-    data[2].(float64), // Dec
-    data[3].(float64), // Mag
-    data[4].(float64), // Dmag
-    data[5].(float64), // X
-    data[6].(float64), // Y
-    data[7].(float64), // Major
-    data[8].(float64), // Minor
-    data[9].(float64), // Phi
-    data[10].(float64), // Det
-    data[11].(float64), // ChiN
-    data[12].(float64), // Pvr
-    data[13].(float64), // Ptr
-    data[14].(float64), // Pmv
-    data[15].(float64), // Pkn
-    data[16].(float64), // Pno
-    data[17].(float64), // Pbn
-    data[18].(float64), // Pxt
-    data[19].(float64), // Pcr
-    data[20].(float64), // Psc
-    data[21].(float64), // Dup
-    data[22].(float64), // WPflx
-    data[23].(float64), // Dflx
-    data[26].(float64)) // Mjd
-    */
   // Create candidate
   p_candidate := createCandidate(candidate_data)
   // Non candidate fields
