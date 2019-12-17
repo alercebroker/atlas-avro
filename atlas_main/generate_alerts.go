@@ -12,6 +12,11 @@ import (
   "time"
 )
 
+// Global map, stamp type to extension name
+var info_fields = [...]string{"RA", "Dec", "Mag", "Dmag", "X", "Y", "Major",
+"Minor", "Phi", "Det", "ChiN", "Pvr", "Ptr", "Pmv", "Pkn", "Pno", "Pbn",
+"Pcr", "Pxt", "Psc", "Dup", "WPflx", "Dflx", "Candid", "ObjectID", "Mjd"}
+
 // Open and return file
 func openFile(fileName string) *os.File {
   // Open file
@@ -50,6 +55,12 @@ func main() {
     content, _ := ioutil.ReadFile(info_file)
     // Put the contents in an array
     contents := strings.Fields(string(content))
+    /*
+    // Beginning of test code
+    for _, field := range info_fields {
+
+    }
+    */
     // Begin by adding the schema version
     schema_version := "0.1"
     alert_data := []interface{}{schema_version}

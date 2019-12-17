@@ -1,7 +1,7 @@
 package main
 
 import (
-  "fmt"
+  //"fmt"
   "io/ioutil"
   "log"
   "strconv"
@@ -62,7 +62,7 @@ func createCutouts(directory string, candid string) map[string]*Cutout {
   // Holder for cutouts
   cutouts := make(map[string]*Cutout)
   // Fill cutout map
-  for kind, extension := range get_extension {
+  for kind, _ := range get_extension {
     // Cutout name
     cutout_file_name := candid + get_extension[kind]
     // Read stamp data
